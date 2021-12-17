@@ -20,10 +20,10 @@ function createBook(textBookTitle, textBookAuthor, textBookYear){
     bookTitle.innerText = textBookTitle;
 
     const bookAuthor = document.createElement("p");
-    bookAuthor.innerText = "Penulis: " + textBookAuthor;
+    bookAuthor.innerHTML = `Penulis: <span id="author">` + textBookAuthor + `</span>`;
 
     const bookYear = document.createElement("p");
-    bookYear.innerText = "Tahun: " + textBookYear;
+    bookYear.innerHTML = `Tahun: <span id="year">` + textBookYear + `</span>`;
 
     const container = document.createElement("div");
     container.classList.add("action");
@@ -51,7 +51,7 @@ function createButton(buttonText, buttonColor, eventListener) {
 
 function createReadButton() {
     return createButton("Selesai Dibaca", "green",function(event){
-         addBookToCompleted(event.target.parentElement);
+         addBookToCompleted(event.target.parentElement.parentElement);
     });
 }
 
@@ -62,12 +62,13 @@ function createDeleteButton() {
 }
 
 function addBookToCompleted(bookElement) {
-    const bookTitle = bookElement.querySelector(".book_item > h3").innerText;
-    const bookAuthor = bookElement.querySelector(".book_item > p").innerText;
-    const bookYear = bookElement.querySelector(".book_item > p").innerText;
-
-    const newBook = createBook(bookTitle, bookAuthor, bookYear);
     const listCompleted = document.getElementById(COMPLETED_LIST_BOOK_ID);
+ 
+    const taskTitle = bookElement.querySelector("h3").innerText;
+    const taskAuthor = bookElement.querySelector("span#author").innerText;
+    const taskYear = bookElement.querySelector("span#year").innerText;
+
+    const newBook = createBook(taskTitle, taskAuthor, taskYear);
     listCompleted.append(newBook);
     bookElement.remove();
 } 

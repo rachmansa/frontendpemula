@@ -2,17 +2,20 @@ const UNCOMPLETED_LIST_BOOK_ID = "incompleteBookshelfList";
 const COMPLETED_LIST_BOOK_ID = "completeBookshelfList"; 
 
 function addBook() {
+    const listCompleted = document.getElementById(COMPLETED_LIST_BOOK_ID);
     const incompletedBookList = document.getElementById(UNCOMPLETED_LIST_BOOK_ID);
 
     const textBookTitle = document.getElementById("inputBookTitle").value;
     const textBookAuthor = document.getElementById("inputBookAuthor").value;
     const textBookYear = document.getElementById("inputBookYear").value;
     const textBookIsComplete = document.getElementById("inputBookIsComplete").checked;
-
     const book = createBook(textBookTitle, textBookAuthor, textBookYear,textBookIsComplete);
-    incompletedBookList.append(book);
 
-    
+    if(textBookIsComplete){
+        listCompleted.append(book);
+    } else {
+        incompletedBookList.append(book);
+    }
 }
 
 function createBook(textBookTitle, textBookAuthor, textBookYear, isCompleted){
@@ -27,6 +30,7 @@ function createBook(textBookTitle, textBookAuthor, textBookYear, isCompleted){
 
     const container = document.createElement("div");
     container.classList.add("action");
+    console.log(isCompleted);
 
     if(isCompleted){
         container.append(createUnfinishedReadButton(), createDeleteButton());
@@ -34,7 +38,6 @@ function createBook(textBookTitle, textBookAuthor, textBookYear, isCompleted){
         container.append(createReadButton(), createDeleteButton());
     }
     
-
     const section = document.createElement("article");
     section.classList.add("book_item");
 
@@ -68,8 +71,10 @@ function createUnfinishedReadButton() {
 }
 
 function createDeleteButton() {
-    return createButton("Hapus Buku", "red",function(event){
-      deleteBook(event.target.parentElement.parentElement);
+    return createButton("Hapus Buku", "red", function (event) {
+        let confirmation = confirm("Apa Anda yakin ingin menghapus buku?");  
+        if(confirmation)
+            deleteBook(event.target.parentElement.parentElement);
    });
 }
 

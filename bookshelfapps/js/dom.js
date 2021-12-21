@@ -15,7 +15,7 @@ function addBook() {
     
 }
 
-function createBook(textBookTitle, textBookAuthor, textBookYear){
+function createBook(textBookTitle, textBookAuthor, textBookYear, isCompleted){
     const bookTitle = document.createElement("h3");
     bookTitle.innerText = textBookTitle;
 
@@ -27,7 +27,13 @@ function createBook(textBookTitle, textBookAuthor, textBookYear){
 
     const container = document.createElement("div");
     container.classList.add("action");
-    container.append(createReadButton(), createDeleteButton());
+
+    if(isCompleted){
+        container.append(createUnfinishedReadButton(), createDeleteButton());
+    } else {
+        container.append(createReadButton(), createDeleteButton());
+    }
+    
 
     const section = document.createElement("article");
     section.classList.add("book_item");
@@ -55,9 +61,15 @@ function createReadButton() {
     });
 }
 
+function createUnfinishedReadButton() {
+    return createButton("Belum Selesai Dibaca", "green",function(event){
+         undoBookFromCompleted(event.target.parentElement.parentElement);
+    });
+}
+
 function createDeleteButton() {
     return createButton("Hapus Buku", "red",function(event){
-      deleteBook(event.target.parentElement);
+      deleteBook(event.target.parentElement.parentElement);
    });
 }
 
@@ -68,10 +80,23 @@ function addBookToCompleted(bookElement) {
     const taskAuthor = bookElement.querySelector("span#author").innerText;
     const taskYear = bookElement.querySelector("span#year").innerText;
 
-    const newBook = createBook(taskTitle, taskAuthor, taskYear);
+    const newBook = createBook(taskTitle, taskAuthor, taskYear, true);
     listCompleted.append(newBook);
     bookElement.remove();
-} 
+}
+
+function undoBookFromCompleted(bookElement){
+    const listUncompleted = document.getElementById(UNCOMPLETED_LIST_BOOK_ID);
+ 
+    const taskTitle = bookElement.querySelector("h3").innerText;
+    const taskAuthor = bookElement.querySelector("span#author").innerText;
+    const taskYear = bookElement.querySelector("span#year").innerText;
+
+    const newBook = createBook(taskTitle, taskAuthor, taskYear, false);
+
+    listUncompleted.append(newBook);
+    bookElement.remove();
+}
 
 function deleteBook(bookElement) {
     bookElement.remove();

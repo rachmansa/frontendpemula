@@ -1,5 +1,6 @@
 const UNCOMPLETED_LIST_BOOK_ID = "incompleteBookshelfList";
 const COMPLETED_LIST_BOOK_ID = "completeBookshelfList"; 
+const BOOK_ITEMID = "bookId";
 
 function addBook() {
     const listCompleted = document.getElementById(COMPLETED_LIST_BOOK_ID);
@@ -9,13 +10,19 @@ function addBook() {
     const textBookAuthor = document.getElementById("inputBookAuthor").value;
     const textBookYear = document.getElementById("inputBookYear").value;
     const textBookIsComplete = document.getElementById("inputBookIsComplete").checked;
+
     const book = createBook(textBookTitle, textBookAuthor, textBookYear,textBookIsComplete);
+    const bookObject = composeBookObject(textBookTitle, textBookAuthor, textBookYear,textBookIsComplete);
+
+    book[BOOK_ITEMID] = bookObject.id;
+    books.push(bookObject);
 
     if(textBookIsComplete){
         listCompleted.append(book);
     } else {
         incompletedBookList.append(book);
     }
+    updateDataToStorage();
 }
 
 function createBook(textBookTitle, textBookAuthor, textBookYear, isCompleted){
@@ -86,8 +93,14 @@ function addBookToCompleted(bookElement) {
     const taskYear = bookElement.querySelector("span#year").innerText;
 
     const newBook = createBook(taskTitle, taskAuthor, taskYear, true);
+    const book = findBook(bookElement[BOOK_ITEMID]);
+    book.isCompleted = true;
+    newBook[BOOK_ITEMID] = book.id;
+
     listCompleted.append(newBook);
     bookElement.remove();
+
+    updateDataToStorage();
 }
 
 function undoBookFromCompleted(bookElement){
@@ -99,10 +112,21 @@ function undoBookFromCompleted(bookElement){
 
     const newBook = createBook(taskTitle, taskAuthor, taskYear, false);
 
+    const book = findBook(bookElement[BOOK_ITEMID]);
+    book.isCompleted = false;
+    newBook[BOOK_ITEMID] = book.id;
+
     listUncompleted.append(newBook);
     bookElement.remove();
+
+    updateDataToStorage();
 }
 
 function deleteBook(bookElement) {
+    const bookPosition = findBookIndex(bookElement[BOOK_ITEMID]);
+    books.splice(bookPosition, 1);
+
     bookElement.remove();
-} 
+    updateDataToStorage();
+}
+
